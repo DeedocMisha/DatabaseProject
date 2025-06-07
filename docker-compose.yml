@@ -28,6 +28,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    depends_on:
+      - db
+
 
   db:
     image: postgres:15
@@ -37,6 +40,10 @@ services:
       POSTGRES_DB: database
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./initdb/import_data.sql:/docker-entrypoint-initdb.d/import_data.sql
+      - ./initdb/.data_sanitized2.csv:/.data_sanitized2.csv
+    ports:
+      - "5432:5432"
     networks:
       - app-network
     healthcheck:
